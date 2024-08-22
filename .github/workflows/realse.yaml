@@ -1,48 +1,66 @@
 name: Flutter CI/CD Pipeline
 
 on:
+  pull_request:
+    branches:
+      - production
   push:
+    branches:
+      - production
     tags:
       - 'v*' # Adjust this pattern to match your tag naming convention
+
 jobs:
   build:
     runs-on: macos-latest
+
     steps:
       # Step 1: Checkout the repository code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Flutter
+      # Step 2: Set up cache for Flutter dependencies
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pub-cache
+            build
+          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-
+
+      # Step 3: Set up Flutter
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
 
-      # Step 3: Verify Flutter version
+      # Step 4: Verify Flutter version
       - name: Flutter version
         run: flutter --version
 
-      # Step 4: Install dependencies
+      # Step 5: Install dependencies
       - name: Install dependencies
         run: flutter pub get
 
-      # Step 5: Run tests only if code changes are detected
+      # Step 6: Run tests
       - name: Run tests
         run: flutter test
 
-      # Step 6: Build APK only if code changes are detected
+      # Step 7: Build APK
       - name: Build APK
         run: flutter build apk --release
-      
-      # Step 7: Build APK only if code changes are detected
-      - name: Build ios APK
+
+      # Step 8: Build iOS
+      - name: Build iOS
         run: flutter build ios --release --no-codesign
 
-      # Step 8: Archive APK as an artifact
+      # Step 9: Archive APK and IPA as artifacts
       - name: Archive APK and IPA
         uses: actions/upload-artifact@v3
         with:
-         name: app-release
-         path: |
-          build/app/outputs/flutter-apk/app-release.apk
-          build/ios/ipa/app-release.ipa
+          name: app-release
+          path: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/ios/ipa/app-release.ipa

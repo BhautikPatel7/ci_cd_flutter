@@ -11,6 +11,9 @@ class TempClass extends StatelessWidget {
       body: Column(
         children: [
           Text("This is Colum"),
+          Text("This is Colum"),
+          Text("This is Colum"),
+          Text("This is Colum"),
           Center(
             child: Text("This is temp body"),
           ),

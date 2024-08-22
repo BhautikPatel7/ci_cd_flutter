@@ -1,7 +1,6 @@
 name: Flutter CI/CD Pipeline
 
 on:
-  
   push:
     tags:
       - 'v*' # Adjust this pattern to match your tag naming convention
@@ -40,8 +39,10 @@ jobs:
         run: flutter build ios --release --no-codesign
 
       # Step 8: Archive APK as an artifact
-      - name: Archive APK
+      - name: Archive APK and IPA
         uses: actions/upload-artifact@v3
         with:
-          name: app-release
-          path: build/app/outputs/flutter-apk/app-release.apk
+         name: app-release
+         path: |
+          build/app/outputs/flutter-apk/app-release.apk
+          build/ios/ipa/app-release.ipa

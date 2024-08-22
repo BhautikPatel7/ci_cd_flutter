@@ -3,7 +3,7 @@ name: Flutter CI/CD Pipeline
 on:
   pull_request:
     branches:
-      - production
+      - production    
   push:
     branches:
       - production

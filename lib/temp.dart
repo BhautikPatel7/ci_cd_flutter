@@ -8,8 +8,13 @@ class TempClass extends StatelessWidget {
       appBar: AppBar(
         title: Text("This is temp appBar"),
       ),
-      body: Center(
-        child: Text("This is temp body"),
+      body: Column(
+        children: [
+          Text("This is Colum"),
+          Center(
+            child: Text("This is temp body"),
+          ),
+        ],
       ),
     );
   }

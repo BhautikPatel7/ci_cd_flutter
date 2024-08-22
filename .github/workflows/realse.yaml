@@ -1,0 +1,47 @@
+name: Flutter CI/CD Pipeline
+
+on:
+  
+  push:
+    tags:
+      - 'v*' # Adjust this pattern to match your tag naming convention
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      # Step 1: Checkout the repository code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Flutter
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      # Step 3: Verify Flutter version
+      - name: Flutter version
+        run: flutter --version
+
+      # Step 4: Install dependencies
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Step 5: Run tests only if code changes are detected
+      - name: Run tests
+        run: flutter test
+
+      # Step 6: Build APK only if code changes are detected
+      - name: Build APK
+        run: flutter build apk --release
+      
+      # Step 7: Build APK only if code changes are detected
+      - name: Build ios APK
+        run: flutter build ios --release --no-codesign
+
+      # Step 8: Archive APK as an artifact
+      - name: Archive APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release
+          path: build/app/outputs/flutter-apk/app-release.apk
